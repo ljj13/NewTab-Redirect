@@ -6,7 +6,9 @@ import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { setTimeout as delay } from "node:timers/promises";
 
-const CHROME = "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe";
+const CHROME =
+  process.env.NTR_BROWSER ??
+  join(process.env.LOCALAPPDATA ?? "", "ms-playwright", "chromium-1155", "chrome-win", "chrome.exe");
 const EXT = resolve(import.meta.dirname, "..", "..");
 const PORT = 9455;
 

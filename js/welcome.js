@@ -16,7 +16,12 @@ const selfOrigin = `chrome-extension://${chrome.runtime.id}`;
 function statusFor(norm) {
   if (norm.ok) return { key: "urlOk", valid: true, empty: false };
   if (norm.error === "empty") return { key: "urlEmpty", valid: true, empty: true };
-  return { key: norm.error === "loop" ? "urlLoop" : norm.error === "forbidden" ? "urlForbidden" : norm.error === "unsupported" ? "urlUnsupported" : "urlInvalid", valid: false, empty: false };
+  const keyByError = {
+    loop: "urlLoop",
+    forbidden: "urlForbidden",
+    unsupported: "urlUnsupported",
+  };
+  return { key: keyByError[norm.error] ?? "urlInvalid", valid: false, empty: false };
 }
 
 function renderStatus() {

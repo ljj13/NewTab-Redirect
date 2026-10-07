@@ -19,7 +19,6 @@ import {
 
 const $ = (sel) => document.querySelector(sel);
 const selfOrigin = `chrome-extension://${chrome.runtime.id}`;
-const REPO_URL = "https://github.com/ljj13/NewTab-Redirect";
 
 const QUICK_PICKS = [
   { key: "pickBlank", url: "about:blank" },

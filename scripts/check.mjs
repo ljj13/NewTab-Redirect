@@ -133,7 +133,7 @@ for (const file of htmlFiles) {
     }
   }
   // CSS 内联远程引用
-  for (const m of html.matchAll(/style="[^"]*url\(\s*['"]?https?:/gi)) {
+  if (/style="[^"]*url\(\s*['"]?https?:/i.test(html)) {
     fail(`${file}: remote css url() reference`);
   }
 

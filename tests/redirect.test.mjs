@@ -11,7 +11,6 @@ import { normalizeRedirectUrl } from "../js/lib/redirect.js";
 
 const SELF_ORIGIN = "chrome-extension://abcdefghijklmnop";
 
-const ok = (raw, opts) => normalizeRedirectUrl(raw, opts);
 const okHttp = (raw, opts) => {
   const r = normalizeRedirectUrl(raw, opts);
   assert.deepEqual({ ok: r.ok, mode: r.mode }, { ok: true, mode: "http" }, `${raw}`);

@@ -3,3 +3,8 @@
 *.swp
 *.bak
 Archive.zip
+
+dist/
+node_modules/
+*.zip
+package-lock.json.bak

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>New Tab</title>
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/newtab.css">
+</head>
+<body class="boot">
+  <main class="dash" aria-label="New Tab Redirect dashboard">
+    <header class="dash-header">
+      <div class="brand">
+        <img src="../icons/icon48.png" alt="" width="28" height="28" class="brand-icon">
+        <div>
+          <h1 class="brand-name" data-i18n="appName">New Tab Redirect</h1>
+          <p class="brand-tagline" data-i18n="dashTagline"></p>
+        </div>
+      </div>
+      <button id="btn-settings" class="btn secondary small icon-btn" data-i18n-aria="openSettings"
+              data-i18n-title="openSettings" aria-label="Settings">
+        <svg width="17" height="17" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="8" cy="8" r="2.2" stroke="currentColor" stroke-width="1.4"/><path d="M8 1.6v2.1m0 8.6v2.1M14.4 8h-2.1M3.7 8H1.6m10.93-3.73-1.48 1.48M4.95 11.05l-1.48 1.48m9.06 0-1.48-1.48M4.95 4.95 3.47 3.47" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+        <span data-i18n="openSettings">Settings</span>
+      </button>
+    </header>
+
+    <p id="redirect-failed" class="redirect-failed danger-text" hidden role="status"></p>
+
+    <section id="topsites-section" class="dash-section" hidden aria-labelledby="topsites-title">
+      <div class="section-head">
+        <h2 id="topsites-title" data-i18n="dashTopSites">Top sites</h2>
+      </div>
+      <div id="topsites-grid" class="tile-grid" role="list"></div>
+    </section>
+
+    <section id="enable-topsites" class="enable-card" hidden>
+      <span class="enable-text" data-i18n="dashEnableTopSites"></span>
+      <button id="btn-enable-topsites" class="btn tonal small" data-i18n="dashEnableTopSites"></button>
+      <span id="denied-topsites" class="hint danger-text" hidden data-i18n="dashPermDeniedTopSites"></span>
+    </section>
+
+    <section id="bookmarks-section" class="dash-section" hidden aria-labelledby="bookmarks-title">
+      <div class="section-head">
+        <h2 id="bookmarks-title" data-i18n="dashBookmarks">Bookmarks</h2>
+      </div>
+      <div id="bookmarks-row" class="bookmark-row" role="list"></div>
+    </section>
+
+    <section id="enable-bookmarks" class="enable-card" hidden>
+      <span class="enable-text" data-i18n="dashEnableBookmarks"></span>
+      <button id="btn-enable-bookmarks" class="btn tonal small" data-i18n="dashEnableBookmarks"></button>
+      <span id="denied-bookmarks" class="hint danger-text" hidden data-i18n="dashPermDeniedBookmarks"></span>
+    </section>
+  </main>
+
+  <script type="module" src="../js/newtab.js"></script>
+</body>
+</html>

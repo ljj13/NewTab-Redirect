@@ -1,0 +1,24 @@
+{
+  "name": "newtab-redirect",
+  "version": "4.0.0",
+  "private": true,
+  "description": "Modern Chrome MV3 extension: open any URL — or a lightweight dashboard — in every new tab. (Dev toolchain only; the extension has no runtime dependencies.)",
+  "type": "module",
+  "scripts": {
+    "test": "node --test tests/storage.test.mjs tests/redirect.test.mjs",
+    "check": "node scripts/check.mjs",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "package": "node scripts/package.mjs",
+    "test:e2e": "node scripts/dev/e2e.mjs"
+  },
+  "devDependencies": {
+    "eslint": "^9.39.2",
+    "playwright-core": "^1.50.0",
+    "prettier": "^3.7.4"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

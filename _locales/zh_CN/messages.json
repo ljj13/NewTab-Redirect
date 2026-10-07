@@ -1,0 +1,116 @@
+{
+  "extName": {
+    "message": "新标签页重定向",
+    "description": "扩展名称"
+  },
+  "extDesc": {
+    "message": "让每个新标签页打开任意网址，或一个含常用网站与书签的轻量仪表盘。现代、快速、无追踪。",
+    "description": "扩展描述"
+  },
+  "appName": { "message": "New Tab Redirect" },
+  "settings": { "message": "设置" },
+  "save": { "message": "保存" },
+  "cancel": { "message": "取消" },
+  "reset": { "message": "重置" },
+  "close": { "message": "关闭" },
+  "testOpen": { "message": "测试打开" },
+  "openSettings": { "message": "设置" },
+  "saveAndStart": { "message": "开始使用" },
+  "skipToDashboard": { "message": "跳过，直接进入仪表盘" },
+
+  "redirectTitle": { "message": "新标签页打开" },
+  "redirectDesc": {
+    "message": "输入每个新标签页要打开的网址。留空则显示默认仪表盘。"
+  },
+  "urlLabel": { "message": "跳转网址" },
+  "urlPlaceholder": { "message": "例如 example.com 或 https://…，留空显示仪表盘" },
+  "quickPicks": { "message": "快速选择" },
+  "pickBlank": { "message": "空白页" },
+  "pickDownloads": { "message": "Chrome 下载" },
+  "pickHistory": { "message": "Chrome 历史记录" },
+  "pickExtensions": { "message": "Chrome 扩展管理" },
+  "pickSettings": { "message": "Chrome 设置" },
+  "pickDashboard": { "message": "默认仪表盘" },
+
+  "urlOk": { "message": "网址有效" },
+  "urlEmpty": { "message": "为空 —— 将显示默认仪表盘" },
+  "urlInvalid": { "message": "这不是有效的网址" },
+  "urlUnsupported": { "message": "不支持该类型的地址" },
+  "urlForbidden": { "message": "不允许使用脚本地址（javascript:）" },
+  "urlLoop": { "message": "该地址会再次打开新标签页，不允许使用" },
+  "fileAccessNote": {
+    "message": "要打开本地 file:// 页面，还需在 chrome://extensions 中为本扩展开启“允许访问文件网址”。"
+  },
+
+  "redirectModeTitle": { "message": "跳转方式" },
+  "modeNavigate": { "message": "直接导航" },
+  "modeNavigateHint": { "message": "原地替换新标签页，不会新增历史记录。" },
+  "modeTabUpdate": { "message": "标签页更新" },
+  "modeTabUpdateHint": { "message": "打开后光标停留在地址栏，方便直接输入搜索。" },
+
+  "syncTitle": { "message": "Chrome Sync" },
+  "syncToggleLabel": { "message": "在设备之间同步设置" },
+  "syncHint": {
+    "message": "使用 Chrome 账户同步。只同步本扩展的设置，绝不包含你的浏览数据。"
+  },
+  "syncRestore": { "message": "从 Chrome Sync 恢复" },
+  "syncRestored": { "message": "已从 Chrome Sync 恢复设置" },
+  "syncRestoreNone": { "message": "没有找到已同步的设置" },
+
+  "appearanceTitle": { "message": "外观" },
+  "themeLabel": { "message": "主题" },
+  "themeSystem": { "message": "跟随系统" },
+  "themeLight": { "message": "浅色" },
+  "themeDark": { "message": "深色" },
+
+  "dashboardTitle": { "message": "默认仪表盘" },
+  "dashboardDesc": { "message": "未设置跳转网址时显示。" },
+  "enableBookmarks": { "message": "显示书签栏" },
+  "enableTopSites": { "message": "显示常用网站" },
+  "bookmarkCountLabel": { "message": "书签显示数量" },
+  "topSiteCountLabel": { "message": "常用网站显示数量" },
+  "permGranted": { "message": "权限已授予" },
+  "permMissing": { "message": "开启时会请求相应权限" },
+  "permDeniedHint": { "message": "权限曾被拒绝。关闭后再开启可再次请求。" },
+
+  "advancedTitle": { "message": "高级设置" },
+  "resetTitle": { "message": "重置所有设置" },
+  "resetDesc": { "message": "清除本设备上的跳转网址与仪表盘偏好。" },
+  "resetConfirmTitle": { "message": "确认重置设置？" },
+  "resetConfirmDesc": {
+    "message": "将清除跳转网址与仪表盘偏好设置，此操作不可撤销。"
+  },
+  "currentSettings": { "message": "当前设置（JSON）" },
+
+  "toastSaved": { "message": "设置已保存" },
+  "toastReset": { "message": "已重置为默认设置" },
+  "toastTestOpened": { "message": "已打开测试标签页" },
+  "toastTestFailed": { "message": "无法打开该网址" },
+  "toastSaveInvalid": { "message": "请先修正网址再保存" },
+
+  "welcomeTitle": { "message": "欢迎使用" },
+  "welcomeSubtitle": {
+    "message": "New Tab Redirect 让每个新标签页打开你指定的网址，或一个轻量仪表盘。"
+  },
+  "welcomePrivacy": {
+    "message": "开源（MIT）。无追踪、无远程代码、不收集数据。设置仅保存在本地或你的 Chrome Sync 中。"
+  },
+  "welcomeAttribution": {
+    "message": "基于 James Schubert 的 New Tab Redirect!，MIT 许可证授权。"
+  },
+
+  "dashTagline": { "message": "新标签页仪表盘" },
+  "dashTopSites": { "message": "常用网站" },
+  "dashBookmarks": { "message": "书签栏" },
+  "dashEnableBookmarks": { "message": "显示书签" },
+  "dashEnableTopSites": { "message": "显示常用网站" },
+  "dashBookmarksEmpty": { "message": "书签栏还是空的。" },
+  "dashTopSitesEmpty": { "message": "暂无常用网站记录，浏览一会儿就会出现在这里。" },
+  "dashPermDeniedBookmarks": { "message": "权限被拒绝，可在设置中开启" },
+  "dashPermDeniedTopSites": { "message": "权限被拒绝，可在设置中开启" },
+  "dashRedirectFailed": { "message": "跳转失败 —— 请在设置中检查网址" },
+
+  "footerAttribution": { "message": "基于 James Schubert 的 New Tab Redirect!（MIT 许可）。" },
+  "footerRepo": { "message": "项目主页" },
+  "footerVersion": { "message": "版本" }
+}

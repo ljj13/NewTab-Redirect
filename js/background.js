@@ -1,170 +1,52 @@
-/*global chrome*/
-'use strict';
-var slice = Array.prototype.slice;
-var manifest = chrome.runtime.getManifest();
-var allOptions = ["usingStorageApi", "url", "syncOptions", "lastInstall", "showWelcome", "upgrade_3.1", "always-tab-update"];
+/**
+ * New Tab Redirect v4 — service worker（module）。
+ *
+ * 职责：
+ * 1. 安装/启动时执行旧版配置迁移（幂等）。
+ * 2. 全新安装且未完成首启设置时打开 Welcome 页。
+ * 3. 开启 Chrome Sync 时把 sync 区的设置镜像回 local 工作副本。
+ */
 
-function log(){
-    var args = slice.call(arguments);
-    var msg = args.shift();
-    msg = "(%s) " + msg;
-    args.unshift(manifest.version);
-    args.unshift(msg);
+import { SETTINGS_KEY, getSettings, migrateSettings } from "./lib/storage.js";
 
-    console.log.apply(console, args);
-}
+const TAG = "[NTR4]";
 
-function init() {
-    log("background.js: init()");
-}
-
-async function saveInitial() {
-    log("background.js: Initial setup.");
-    var options = {};
-    var arr = await chrome.storage.local.get('syncOptions');
-    if (Object.keys(arr).length) {
-        log('Found options on localStorage');
-        options = JSON.parse(arr);
+chrome.runtime.onInstalled.addListener(async (details) => {
+  try {
+    const settings = await migrateSettings();
+    console.info(TAG, "onInstalled:", details.reason, settings);
+    if (details.reason === "install" && !settings.welcome.done) {
+      await chrome.tabs.create({ url: chrome.runtime.getURL("pages/welcome.html") });
     }
-
-    // by default, initial installs won't sync options
-    options["syncOptions"] = false;
-    options["usingStorageApi"] = true;
-    options["showWelcome"] = true;
-
-    if (!options.url) {
-        log("Using default New Tab Redirect page");
-        // this defaults to the New Tab Redirect Apps page
-        options.url = "";
-    }
-
-    options["lastInstall"] = +new Date();
-
-    log("trying to save these options", options);
-    save(options, "local");
-}
-
-// When installed, show welcome page
-chrome.runtime.onInstalled.addListener(function (details) {
-
-    var current = +new Date();
-    var sixMonths = 15894000000; // milliseconds = 6.04 months.
-
-    if (details.reason === "chrome_update") {
-        return void 0;
-    } else if (details.reason === "install" || details.reason === "update") {
-        return retrieve(allOptions, "local", function (localQuery) {
-            return retrieve(allOptions, "sync", function (query) {
-                var canShowWelcome = true;
-                log("Pulled sync options:", query);
-
-                if((0+query.lastInstall) > 1){
-                    var installed = parseInt(query.lastInstall, 10);
-
-                    // 500s buffer between install and running listener should be safe
-                    var listener5sBuffer = Math.abs(installed - current);
-                    var listener5sBufferCheck = (listener5sBuffer > 500000);
-
-                    // we must wait at least 6 months to show welcome page again
-                    var installDiff = (current - installed);
-                    var sixMonthCheck = (installDiff > sixMonths);
-
-                    canShowWelcome =  listener5sBufferCheck && sixMonthCheck;
-
-                    log(
-                        'Can we show welcome by checks?(%s), ' +
-                        'Installed: %d, %d ms between last install and listener, ' +
-                        '%d ms since last install',
-                        canShowWelcome, installed, listener5sBuffer, installDiff);
-                }
-
-                if (localQuery.showWelcome == false || query.showWelcome == false) {
-                    log("User doesn't ever want to see the welcome page. canShowWelcome=false");
-                    canShowWelcome = false;
-                }
-
-                var options = {};
-
-                // user previously installed on another machine, either sync or do initial setup
-                if (query["syncOptions"]) {
-                    log("saving sync option setup");
-                    allOptions.forEach(function (elem) {
-                        options[elem] = query[elem];
-                    });
-
-                    options["lastInstall"] = current;
-                    save(options, "local");
-                } else if(details.reason === "install") {
-                    // User hasn't previously installed, save defaults
-                    log("saving initial setup (not syncing)");
-                    saveInitial();
-                }
-
-                // be sure to save when we last installed (or updated)
-                save({ "lastInstall": +new Date() }, "sync");
-
-                // only display the upgrade message once, and only for true upgrades
-                if((manifest.version === "3.1" || manifest.version === "3.1.1" ) && details.reason === "update" && !localQuery["upgrade_3.1"]) {
-                    log("background.js: showing v3.1 important upgrade message");
-                    save({ "upgrade_3.1": true }, "local");
-                    return chrome.tabs.create({"url": "upgraded/3.1.html" });
-                }
-
-                log("Try to show welcome on %s: %s (should only show on install)", details.reason, canShowWelcome);
-                // on initial install, or every 6 months, show Welcome Page
-                if (canShowWelcome && details.reason === "install") {
-                    log("background.js: showing welcome page");
-                    return chrome.tabs.create({"url": "welcome.html" });
-                }
-            });
-        });
-    }
+  } catch (e) {
+    console.error(TAG, "onInstalled failed:", e);
+  }
 });
 
-chrome.storage.onChanged.addListener(function (changes, namespace) {
-    retrieve("syncOptions", "local", function (items) {
-        if (items.syncOptions == "false" || namespace != "sync") return;
-
-        var saveObj = {};
-        for (var key in changes) {
-            if (changes.hasOwnProperty(key)) {
-                var change = changes[key];
-                log('background.js: "%s|%s" changed. "%s" -> "%s"',
-                    namespace,
-                    key,
-                    change.oldValue,
-                    change.newValue);
-
-                saveObj[key] = change.newValue;
-            }
-        }
-        if(Object.keys(saveObj).length > 0) {
-            log("Saving sync values locally");
-            save(saveObj, "local");
-        }
-    });
+chrome.runtime.onStartup.addListener(async () => {
+  try {
+    await migrateSettings();
+  } catch (e) {
+    console.error(TAG, "onStartup migration failed:", e);
+  }
 });
 
-function save(items, area) {
-    chrome.storage.local.get(["syncOptions"], function (localQuery) {
-        if (localQuery.syncOptions == false) {
-            // if user doesn't want to save, we'll always sync to local
-            area = "local";
-        }
-
-        log("Saving the following items to " + area + ":", items);
-        chrome.storage[area].set(items);
-    });
-}
-
-function retrieve(items, area, cb) {
-    if ("function" !== typeof cb) {
-        cb = function (items) {
-            log("items:", items);
-        };
+// sync → local 镜像。仅当“当前本地设置”开启了同步时才镜像，
+// 防止用户关闭同步后，残留的 sync 副本把旧配置灌回来。
+chrome.storage.onChanged.addListener(async (changes, area) => {
+  if (area !== "sync" || !changes[SETTINGS_KEY]) return;
+  try {
+    const current = (await chrome.storage.local.get(SETTINGS_KEY))[SETTINGS_KEY];
+    const incoming = changes[SETTINGS_KEY].newValue;
+    if (!incoming || typeof incoming !== "object" || incoming.syncEnabled !== true) return;
+    if (!current || current.syncEnabled === true) {
+      await chrome.storage.local.set({ [SETTINGS_KEY]: incoming });
+      console.info(TAG, "sync -> local mirrored");
     }
+  } catch (e) {
+    console.error(TAG, "sync mirror failed:", e);
+  }
+});
 
-    chrome.storage[area].get(items, cb);
-}
-
-init();
+// 预热：SW 首次唤醒时确保迁移完成（onStartup 不覆盖浏览器常驻期间的重载场景）。
+void getSettings().catch((e) => console.error(TAG, "startup getSettings failed:", e));

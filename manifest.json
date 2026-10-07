@@ -1,24 +1,30 @@
 {
   "manifest_version": 3,
-  "name": "New Tab Redirect",
-  "short_name": "NTR!",
-  "description": "Allows a user to provide the URL of the page that loads in a new tab.",
-  "version": "3.1.6",
+  "default_locale": "en",
+  "name": "__MSG_extName__",
+  "short_name": "NTR",
+  "description": "__MSG_extDesc__",
+  "version": "4.0.0",
   "background": {
-    "service_worker" : "js/background.js"
+    "service_worker": "js/background.js",
+    "type": "module"
   },
-  "options_page":"options.html",
+  "options_ui": {
+    "page": "pages/options.html",
+    "open_in_tab": true
+  },
   "chrome_url_overrides": {
-    "newtab": "main.html"
+    "newtab": "pages/newtab.html"
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
   },
   "permissions": ["storage", "favicon"],
-  "host_permissions": ["file:///", "file://", "*://*"],
-  "optional_permissions": ["tabs", "topSites", "management", "bookmarks"],
-  "icons": {
-    "200": "images/icon200.png",
-    "128": "images/icon128.png",
-    "19":"images/icon19.png"
-  },
+  "host_permissions": ["file:///*"],
+  "optional_permissions": ["bookmarks", "topSites"],
   "incognito": "split",
-  "minimum_chrome_version" : "89"
+  "minimum_chrome_version": "104"
 }

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Welcome — New Tab Redirect</title>
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/welcome.css">
+</head>
+<body>
+  <main class="welcome">
+    <section class="card welcome-card">
+      <img src="../icons/icon128.png" alt="" width="72" height="72" class="welcome-icon">
+      <h1 data-i18n="welcomeTitle">Welcome</h1>
+      <p class="subtitle" data-i18n="welcomeSubtitle"></p>
+
+      <label class="url-label" for="url-input" data-i18n="urlLabel">Redirect URL</label>
+      <input id="url-input" class="input" type="text" spellcheck="false" autocomplete="off"
+             data-i18n-ph="urlPlaceholder">
+      <p id="url-status" class="url-status hint" role="status" aria-live="polite"></p>
+
+      <div class="actions">
+        <button id="btn-start" class="btn" disabled data-i18n="saveAndStart">Start using it</button>
+        <button id="btn-skip" class="btn secondary" data-i18n="skipToDashboard">Skip</button>
+      </div>
+
+      <div class="meta">
+        <p class="hint" data-i18n="welcomePrivacy"></p>
+        <p class="hint" data-i18n="welcomeAttribution"></p>
+      </div>
+    </section>
+  </main>
+
+  <script type="module" src="../js/welcome.js"></script>
+</body>
+</html>

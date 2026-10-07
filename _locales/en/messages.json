@@ -1,0 +1,116 @@
+{
+  "extName": {
+    "message": "New Tab Redirect",
+    "description": "Extension name shown in the manifest and store"
+  },
+  "extDesc": {
+    "message": "Open any URL — or a clean dashboard with your top sites and bookmarks — in every new tab. Modern, fast, no tracking.",
+    "description": "Extension description shown in the manifest and store"
+  },
+  "appName": { "message": "New Tab Redirect" },
+  "settings": { "message": "Settings" },
+  "save": { "message": "Save" },
+  "cancel": { "message": "Cancel" },
+  "reset": { "message": "Reset" },
+  "close": { "message": "Close" },
+  "testOpen": { "message": "Test open" },
+  "openSettings": { "message": "Settings" },
+  "saveAndStart": { "message": "Start using it" },
+  "skipToDashboard": { "message": "Skip — open the dashboard" },
+
+  "redirectTitle": { "message": "New tab opens" },
+  "redirectDesc": {
+    "message": "Enter the address to open in every new tab. Leave it empty to show the default dashboard."
+  },
+  "urlLabel": { "message": "Redirect URL" },
+  "urlPlaceholder": { "message": "example.com or https://… — empty shows the dashboard" },
+  "quickPicks": { "message": "Quick picks" },
+  "pickBlank": { "message": "Blank page" },
+  "pickDownloads": { "message": "Downloads" },
+  "pickHistory": { "message": "History" },
+  "pickExtensions": { "message": "Extensions" },
+  "pickSettings": { "message": "Chrome settings" },
+  "pickDashboard": { "message": "Default dashboard" },
+
+  "urlOk": { "message": "Valid address" },
+  "urlEmpty": { "message": "Empty — the default dashboard will be shown" },
+  "urlInvalid": { "message": "This is not a valid address" },
+  "urlUnsupported": { "message": "This address type is not supported" },
+  "urlForbidden": { "message": "Script addresses (javascript:) are not allowed" },
+  "urlLoop": { "message": "This address would reopen the new tab page — not allowed" },
+  "fileAccessNote": {
+    "message": "To open local file:// pages, also enable “Allow access to file URLs” for this extension on chrome://extensions."
+  },
+
+  "redirectModeTitle": { "message": "How to navigate" },
+  "modeNavigate": { "message": "Direct navigation" },
+  "modeNavigateHint": { "message": "Replaces the new tab in place — no extra entry in history." },
+  "modeTabUpdate": { "message": "Tab update" },
+  "modeTabUpdateHint": { "message": "The cursor stays in the address bar after opening, ready to type a search." },
+
+  "syncTitle": { "message": "Chrome Sync" },
+  "syncToggleLabel": { "message": "Sync settings across devices" },
+  "syncHint": {
+    "message": "Uses your Chrome profile sync. Only this extension's settings are synced — never your browsing data."
+  },
+  "syncRestore": { "message": "Restore from Chrome Sync" },
+  "syncRestored": { "message": "Restored settings from Chrome Sync" },
+  "syncRestoreNone": { "message": "No synced settings found" },
+
+  "appearanceTitle": { "message": "Appearance" },
+  "themeLabel": { "message": "Theme" },
+  "themeSystem": { "message": "Follow system" },
+  "themeLight": { "message": "Light" },
+  "themeDark": { "message": "Dark" },
+
+  "dashboardTitle": { "message": "Default dashboard" },
+  "dashboardDesc": { "message": "Shown when no redirect URL is set." },
+  "enableBookmarks": { "message": "Show bookmarks bar" },
+  "enableTopSites": { "message": "Show top sites" },
+  "bookmarkCountLabel": { "message": "Bookmarks to show" },
+  "topSiteCountLabel": { "message": "Top sites to show" },
+  "permGranted": { "message": "Permission granted" },
+  "permMissing": { "message": "Permission will be requested when you turn this on" },
+  "permDeniedHint": { "message": "Permission was denied. Turn it off and on again to request it once more." },
+
+  "advancedTitle": { "message": "Advanced" },
+  "resetTitle": { "message": "Reset all settings" },
+  "resetDesc": { "message": "Clears your redirect URL and dashboard preferences on this device." },
+  "resetConfirmTitle": { "message": "Reset settings?" },
+  "resetConfirmDesc": {
+    "message": "Your redirect URL and dashboard preferences will be cleared. This cannot be undone."
+  },
+  "currentSettings": { "message": "Current settings (JSON)" },
+
+  "toastSaved": { "message": "Settings saved" },
+  "toastReset": { "message": "Settings have been reset" },
+  "toastTestOpened": { "message": "Test tab opened" },
+  "toastTestFailed": { "message": "Could not open this address" },
+  "toastSaveInvalid": { "message": "Fix the address before saving" },
+
+  "welcomeTitle": { "message": "Welcome" },
+  "welcomeSubtitle": {
+    "message": "New Tab Redirect opens any address — or a clean dashboard — in every new tab."
+  },
+  "welcomePrivacy": {
+    "message": "Open source (MIT). No tracking, no remote code, no data collection. Settings stay on your device or in your Chrome Sync."
+  },
+  "welcomeAttribution": {
+    "message": "Based on New Tab Redirect! by James Schubert, licensed under the MIT license."
+  },
+
+  "dashTagline": { "message": "New tab dashboard" },
+  "dashTopSites": { "message": "Top sites" },
+  "dashBookmarks": { "message": "Bookmarks" },
+  "dashEnableBookmarks": { "message": "Show bookmarks" },
+  "dashEnableTopSites": { "message": "Show top sites" },
+  "dashBookmarksEmpty": { "message": "Your bookmarks bar is empty." },
+  "dashTopSitesEmpty": { "message": "No top sites yet — browse a little and they will appear here." },
+  "dashPermDeniedBookmarks": { "message": "Permission denied — enable it in settings" },
+  "dashPermDeniedTopSites": { "message": "Permission denied — enable it in settings" },
+  "dashRedirectFailed": { "message": "Redirect failed — check the address in settings" },
+
+  "footerAttribution": { "message": "Based on New Tab Redirect! by James Schubert (MIT)." },
+  "footerRepo": { "message": "Project homepage" },
+  "footerVersion": { "message": "Version" }
+}

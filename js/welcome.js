@@ -42,7 +42,13 @@ async function finishAndGo(settings) {
   // 跳到 chrome://newtab：有配置则经新标签页完成跳转，无配置则落在 Dashboard
   if (settings.redirectUrl.trim() !== "") {
     const result = await performRedirect(settings, { selfOrigin });
-    if (result.redirected) return;
+    if (result.redirected) {
+      // 兜底：跳转被 Chrome 拒绝等异常情况下，3 秒后仍留在 Welcome 则进 Dashboard
+      setTimeout(() => {
+        chrome.tabs.update({ url: "chrome://newtab" }).catch(() => {});
+      }, 3000);
+      return;
+    }
   }
   try {
     await chrome.tabs.update({ url: "chrome://newtab" });

@@ -208,7 +208,17 @@ async function main() {
   // 配置了跳转地址 → 直接跳转；失败则回退 Dashboard 并提示
   if (settings.redirectUrl.trim() !== "") {
     const result = await performRedirect(settings, { selfOrigin });
-    if (result.redirected) return; // 页面即将离开，保持 boot 隐藏态
+    if (result.redirected) {
+      // 兜底：极少数情况下 tabs.update 假成功（导航被 Chrome 拒绝），
+      // 页面未离开时 3 秒后自动回退显示 Dashboard，避免白屏
+      setTimeout(() => {
+        const failed = $("#redirect-failed");
+        failed.textContent = t("dashRedirectFailed");
+        failed.hidden = false;
+        document.body.classList.remove("boot");
+      }, 3000);
+      return;
+    }
     const failed = $("#redirect-failed");
     failed.textContent = t("dashRedirectFailed");
     failed.hidden = false;

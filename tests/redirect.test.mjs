@@ -80,11 +80,10 @@ test("file:// 支持", () => {
   okSpecial("file:");
 });
 
-test("data: 仅允许 text/html 与 text/plain", () => {
-  assert.equal(okSpecial("data:text/html,<h1>hi</h1>"), "data:text/html,<h1>hi</h1>");
-  okSpecial("data:text/plain,hello");
+test("data: 一律拒绝（现代 Chrome 阻止顶层 data 导航）", () => {
+  err("data:text/html,<h1>hi</h1>", "unsupported");
+  err("data:text/plain,hello", "unsupported");
   err("data:image/png;base64,AAAA", "unsupported");
-  err("data:text/csv,a,b", "unsupported");
 });
 
 test("javascript: 拒绝；未知 scheme 拒绝；透传 scheme 允许", () => {

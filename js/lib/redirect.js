@@ -18,7 +18,9 @@ const LOOP_NTP_PATHS = /^(newtab|new-tab-page)\/?$/i;
  * - 空输入 → { error: "empty" }（调用方据此展示默认 Dashboard）。
  * - 无 scheme → 补 https://（例：example.com → https://example.com）。
  * - http/https/file/chrome 等 → 用 URL 解析校验。
- * - about: 仅支持 about:blank；data: 仅支持 text/html 与 text/plain。
+ * - about: 仅支持 about:blank。
+ * - data: 被拒绝：现代 Chrome 阻止顶层 frame 导航到 data: URL（实测
+ *   tabs.update 会假成功导致白屏），因此不再支持上游 2015 年加入的该特性。
  * - chrome://newtab、chrome://new-tab-page 及指向本扩展自身的
  *   chrome-extension:// 页面会再次触发 New Tab Override → 判定为 loop 拒绝。
  * - javascript: 及其余未知 scheme → 拒绝。
@@ -35,8 +37,8 @@ export function normalizeRedirectUrl(raw, { selfOrigin = "" } = {}) {
   const schemeMatch = /^([a-zA-Z][a-zA-Z0-9+.-]*):/.exec(input);
   const scheme = schemeMatch ? schemeMatch[1].toLowerCase() : "https";
 
-  // data: URI 的 HTML 主体允许包含空格；其余输入一律不允许空白字符
-  if (/\s/.test(input) && scheme !== "data") {
+  // URL 中不允许空白字符
+  if (/\s/.test(input)) {
     return { ok: false, error: "invalid", scheme };
   }
 
@@ -101,13 +103,13 @@ export function normalizeRedirectUrl(raw, { selfOrigin = "" } = {}) {
       return { ok: true, url: url.href, mode: "special" };
     }
 
-    case "data":
-      return /^data:text\/(html|plain)[;,]/i.test(input)
-        ? { ok: true, url: input, mode: "special" }
-        : { ok: false, error: "unsupported", scheme };
-
     case "javascript":
       return { ok: false, error: "forbidden", scheme };
+
+    case "data":
+      // 现代 Chrome 阻止顶层 frame 导航到 data: URL（tabs.update 会静默失败），
+      // 保留此分支是为了给出明确的 unsupported 语义而不是掉进未知 scheme 分支
+      return { ok: false, error: "unsupported", scheme };
 
     default:
       if (PASS_THROUGH_SCHEMES.has(scheme)) return { ok: true, url: candidate, mode: "special" };

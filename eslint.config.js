@@ -53,4 +53,11 @@ export default [
       "no-unused-vars": ["error", { argsIgnorePattern: "^_", varsIgnorePattern: "^_" }],
     },
   },
+  {
+    // 浏览器自动化脚本：evaluate 回调运行在页面上下文，需浏览器全局
+    files: ["scripts/dev/**/*.mjs"],
+    languageOptions: {
+      globals: { ...browserGlobals, chrome: "readonly", WebSocket: "readonly", fetch: "readonly" },
+    },
+  },
 ];

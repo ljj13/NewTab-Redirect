@@ -114,10 +114,18 @@ scripts/check.mjs      静态检查（manifest / locales / 远程代码 / 引用
 本地开发：
 
 ```bash
-npm ci        # 安装开发工具链（仅 ESLint/Prettier，不进入运行时）
+npm ci        # 安装开发工具链（仅 ESLint/Prettier/playwright-core，不进入运行时）
 npm test      # Node 单元测试（storage / redirect）
 npm run check # 静态检查
 npm run lint  # ESLint
+npm run package # 打包 dist/newtab-redirect-v<版本>.zip
+```
+
+端到端回归（可选，真实浏览器）：
+
+```bash
+npx playwright@1.50 install chromium   # 品牌版 Chrome 137+ 已移除 --load-extension
+npm run test:e2e                       # 需图形界面；--lang zh-CN 可切语言
 ```
 
 在 Chrome 中验证：`chrome://extensions` → 开发者模式 → 加载已解压的扩展程序 → 选择仓库根目录。

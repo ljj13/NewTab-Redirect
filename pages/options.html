@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>New Tab Redirect</title>
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/options.css">
+</head>
+<body>
+  <div class="page">
+    <header class="page-header">
+      <img src="../icons/icon48.png" alt="" width="36" height="36" class="app-icon">
+      <div>
+        <h1 data-i18n="appName">New Tab Redirect</h1>
+        <p class="page-subtitle" data-i18n="settings">Settings</p>
+      </div>
+    </header>
+
+    <main>
+      <!-- 新标签页打开 -->
+      <section class="card" aria-labelledby="redirect-title">
+        <h2 class="card-title" id="redirect-title" data-i18n="redirectTitle">New tab opens</h2>
+        <p class="card-desc" data-i18n="redirectDesc"></p>
+
+        <div class="url-row">
+          <input id="url-input" class="input" type="text" spellcheck="false" autocomplete="off"
+                 data-i18n-ph="urlPlaceholder" data-i18n-aria="urlLabel" aria-label="Redirect URL">
+          <button id="btn-save" class="btn" data-i18n="save">Save</button>
+          <button id="btn-test" class="btn secondary" data-i18n="testOpen">Test open</button>
+        </div>
+
+        <p id="url-status" class="url-status hint" role="status" aria-live="polite"></p>
+
+        <p id="file-note" class="hint file-note" hidden>
+          <span data-i18n="fileAccessNote"></span>
+          <a href="#" id="link-extensions">chrome://extensions</a>
+        </p>
+
+        <div class="quick-picks">
+          <h3 class="quick-picks-title" data-i18n="quickPicks">Quick picks</h3>
+          <div class="chip-row" id="quick-picks"></div>
+        </div>
+      </section>
+
+      <!-- 跳转方式 -->
+      <section class="card" aria-labelledby="mode-title">
+        <h2 class="card-title" id="mode-title" data-i18n="redirectModeTitle">How to navigate</h2>
+        <div class="radio-group" role="radiogroup" data-i18n-aria="redirectModeTitle">
+          <label class="radio-card">
+            <input type="radio" name="redirect-mode" value="navigate">
+            <span>
+              <span class="radio-title" data-i18n="modeNavigate">Direct navigation</span>
+              <span class="radio-hint" style="display:block" data-i18n="modeNavigateHint"></span>
+            </span>
+          </label>
+          <label class="radio-card">
+            <input type="radio" name="redirect-mode" value="tabupdate">
+            <span>
+              <span class="radio-title" data-i18n="modeTabUpdate">Tab update</span>
+              <span class="radio-hint" style="display:block" data-i18n="modeTabUpdateHint"></span>
+            </span>
+          </label>
+        </div>
+      </section>
+
+      <!-- Chrome Sync -->
+      <section class="card" aria-labelledby="sync-title">
+        <h2 class="card-title" id="sync-title" data-i18n="syncTitle">Chrome Sync</h2>
+        <div class="row">
+          <div class="row-text">
+            <div class="row-title" data-i18n="syncToggleLabel"></div>
+            <div class="row-hint" data-i18n="syncHint"></div>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="sync-switch">
+            <span class="track"></span><span class="knob"></span>
+          </label>
+        </div>
+        <div class="row">
+          <div class="row-text">
+            <div class="row-title" data-i18n="syncRestore"></div>
+          </div>
+          <button id="btn-sync-restore" class="btn tonal small" data-i18n="syncRestore">Restore</button>
+        </div>
+      </section>
+
+      <!-- 外观 -->
+      <section class="card" aria-labelledby="appearance-title">
+        <h2 class="card-title" id="appearance-title" data-i18n="appearanceTitle">Appearance</h2>
+        <div class="theme-row" role="radiogroup" data-i18n-aria="themeLabel">
+          <label class="theme-option">
+            <input type="radio" name="theme" value="system">
+            <span class="theme-swatch theme-swatch-system" aria-hidden="true"></span>
+            <span data-i18n="themeSystem">Follow system</span>
+          </label>
+          <label class="theme-option">
+            <input type="radio" name="theme" value="light">
+            <span class="theme-swatch theme-swatch-light" aria-hidden="true"></span>
+            <span data-i18n="themeLight">Light</span>
+          </label>
+          <label class="theme-option">
+            <input type="radio" name="theme" value="dark">
+            <span class="theme-swatch theme-swatch-dark" aria-hidden="true"></span>
+            <span data-i18n="themeDark">Dark</span>
+          </label>
+        </div>
+      </section>
+
+      <!-- 默认仪表盘 -->
+      <section class="card" aria-labelledby="dashboard-title">
+        <h2 class="card-title" id="dashboard-title" data-i18n="dashboardTitle">Default dashboard</h2>
+        <p class="card-desc" data-i18n="dashboardDesc"></p>
+
+        <div class="row">
+          <div class="row-text">
+            <div class="row-title" data-i18n="enableBookmarks"></div>
+            <div class="row-hint perm-status" id="perm-status-bookmarks"></div>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="dash-bookmarks">
+            <span class="track"></span><span class="knob"></span>
+          </label>
+        </div>
+        <div class="row">
+          <div class="row-text">
+            <div class="row-title" data-i18n="bookmarkCountLabel"></div>
+          </div>
+          <select id="count-bookmarks" class="input" aria-labelledby="dashboard-title"></select>
+        </div>
+
+        <div class="row">
+          <div class="row-text">
+            <div class="row-title" data-i18n="enableTopSites"></div>
+            <div class="row-hint perm-status" id="perm-status-topsites"></div>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="dash-topsites">
+            <span class="track"></span><span class="knob"></span>
+          </label>
+        </div>
+        <div class="row">
+          <div class="row-text">
+            <div class="row-title" data-i18n="topSiteCountLabel"></div>
+          </div>
+          <select id="count-topsites" class="input"></select>
+        </div>
+      </section>
+
+      <!-- 高级 -->
+      <section class="card" aria-labelledby="advanced-title">
+        <h2 class="card-title" id="advanced-title" data-i18n="advancedTitle">Advanced</h2>
+        <div class="row">
+          <div class="row-text">
+            <div class="row-title" data-i18n="resetTitle"></div>
+            <div class="row-hint" data-i18n="resetDesc"></div>
+          </div>
+          <button id="btn-reset" class="btn danger small" data-i18n="reset">Reset</button>
+        </div>
+        <details class="settings-json">
+          <summary data-i18n="currentSettings">Current settings (JSON)</summary>
+          <pre id="settings-json" tabindex="0"></pre>
+        </details>
+      </section>
+    </main>
+
+    <footer class="page-footer">
+      <span id="version"></span>
+      <span class="dot" aria-hidden="true">·</span>
+      <span data-i18n="footerAttribution"></span>
+      <span class="dot" aria-hidden="true">·</span>
+      <a href="https://github.com/ljj13/NewTab-Redirect" target="_blank" rel="noopener"
+         data-i18n="footerRepo">Project homepage</a>
+    </footer>
+  </div>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <dialog id="reset-dialog" class="confirm">
+    <h3 class="dialog-title" data-i18n="resetConfirmTitle"></h3>
+    <p class="dialog-desc" data-i18n="resetConfirmDesc"></p>
+    <div class="dialog-actions">
+      <button id="reset-cancel" class="btn secondary" data-i18n="cancel">Cancel</button>
+      <button id="reset-confirm" class="btn danger" data-i18n="reset">Reset</button>
+    </div>
+  </dialog>
+
+  <script type="module" src="../js/options.js"></script>
+</body>
+</html>

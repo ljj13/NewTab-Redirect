@@ -1,171 +1,85 @@
-var slice = Array.prototype.slice;
-var forEach = Array.prototype.forEach;
-var pages = [
-    { title: "Welcome", id: "welcome_page" },
-    { title: "Intro", id: "intro_page" },
-    { title: "Contact", id: "contact_page" },
-    { title: "FAQ", id: "faq_page" }
-];
-var index = 0;
+/**
+ * Welcome 首启页：一屏完成首次设置。
+ *
+ * - “开始使用”：保存 URL 并标记 welcome.done，随后按已保存配置跳转。
+ * - “跳过”：仅标记 welcome.done，进入默认 Dashboard。
+ * 完成后不再自动弹出（仅全新安装且未完成时由 background 打开）。
+ */
 
-var preloadImages = [
-"NewTabRedirect-options.quick.png",
-"NewTabRedirect-options.saved-nohighlight.png",
-"NewTabRedirect-options.saved.png",
-"NewTabRedirect-options.save.png",
-"NewTabRedirect-options.sync.png",
-"NewTabRedirect-options.url.png"
-]
+import { applyI18n, t } from "../js/lib/i18n.js";
+import { normalizeRedirectUrl, performRedirect } from "../js/lib/redirect.js";
+import { applyTheme, watchSystemTheme } from "../js/lib/theme.js";
+import { getSettings, saveSettings } from "../js/lib/storage.js";
 
-function resize_elements(initializing) {
+const selfOrigin = `chrome-extension://${chrome.runtime.id}`;
 
-    // Get container width, doc width (inside window), calc margin width
-    var cw = document.getElementById("container").clientWidth;
-    var dw = window.innerWidth;
-    var width = (dw - cw) / 2;
-
-    var pages = slice.call(document.getElementsByClassName('slider'), 1);
-    pages.forEach(function(page) {
-      // Only update how far offscreen if the page is already offscreen
-      if(page.style.webkitTransform != "translate3d(0px, 0, 0)") {
-        var onLeft = page.style.webkitTransform.indexOf("-") != -1;
-        page.style.webkitTransform =
-          "translate3d("+ (onLeft ? "-" : "") + Math.max(dw,cw,1000) +"px, 0, 0)";
-      }
-      page.style.display = "block";
-    });
-
-    var elements = document.getElementsByClassName('nav-btn');
-    var iterable = slice.call(elements,0);
-    iterable.forEach(function(el) {
-        el.style.width = width + "px";
-    });
-
-    if(dw <= cw) {
-      iterable.forEach(function(el) {
-          el.classList.add('ghost');
-      });
-    } else {
-      iterable.forEach(function(el) {
-          el.classList.remove('ghost');
-      });
-    }
-    
-    var right = document.getElementById("right_indicator");
-    var left = document.getElementById("left_indicator");
-    set_indicators(left,right);
+function statusFor(norm) {
+  if (norm.ok) return { key: "urlOk", valid: true, empty: false };
+  if (norm.error === "empty") return { key: "urlEmpty", valid: true, empty: true };
+  return { key: norm.error === "loop" ? "urlLoop" : norm.error === "forbidden" ? "urlForbidden" : norm.error === "unsupported" ? "urlUnsupported" : "urlInvalid", valid: false, empty: false };
 }
 
-function keyed_navigation(e) {
-  if(e.keyCode == 39) {
-      navigate(true);
-  } else if (e.keyCode == 37) {
-      navigate(false);
+function renderStatus() {
+  const input = document.querySelector("#url-input");
+  const el = document.querySelector("#url-status");
+  const startBtn = document.querySelector("#btn-start");
+  const norm = normalizeRedirectUrl(input.value, { selfOrigin });
+  const s = statusFor(norm);
+
+  input.classList.toggle("invalid", !s.valid);
+  el.classList.toggle("success-text", s.valid && !s.empty);
+  el.classList.toggle("danger-text", !s.valid);
+  el.textContent = t(s.key);
+  startBtn.disabled = !s.valid;
+}
+
+async function finishAndGo(settings) {
+  // 跳到 chrome://newtab：有配置则经新标签页完成跳转，无配置则落在 Dashboard
+  if (settings.redirectUrl.trim() !== "") {
+    const result = await performRedirect(settings, { selfOrigin });
+    if (result.redirected) return;
+  }
+  try {
+    await chrome.tabs.update({ url: "chrome://newtab" });
+  } catch (e) {
+    console.error("[NTR4] welcome finish failed:", e);
   }
 }
 
-function navigate(advance) {
-    // `advance` means user clicked next, slider should slide to left (negative).
-    var dw = document.width || window.screen.width;
-    var right = document.getElementById("right_indicator");
-    var left = document.getElementById("left_indicator");
-    var original = document.getElementById(pages[index].id);
+async function main() {
+  applyI18n();
+  const settings = await getSettings();
+  applyTheme(settings.appearance.theme);
+  watchSystemTheme(() => settings.appearance.theme);
 
-    if(advance) {
-        if( (index+1) <= (pages.length-1) ) {
-            index++;
-            left.classList.remove('ghost');
+  const input = document.querySelector("#url-input");
+  input.value = settings.redirectUrl;
+  renderStatus();
 
-            var next = document.getElementById(pages[index].id);
-            original.style.webkitTransform = "translate3d(-"+ dw +"px, 0, 0)";
-            if(next) next.style.webkitTransform = "translate3d(0px, 0, 0)";
-        } else {
-            left.classList.remove('ghost');
-            right.classList.add('ghost');
-        }
-    } else {
-        if( (index) > 0 ) {
-            index--;
-            right.classList.remove('ghost');
-
-            var prev = document.getElementById(pages[index].id);
-            original.style.webkitTransform = "translate3d("+ dw +"px, 0, 0)";
-            if(prev) prev.style.webkitTransform = "translate3d(0px, 0, 0)";
-        } else {
-            right.classList.remove('ghost');
-            left.classList.add('ghost');
-        }
+  input.addEventListener("input", renderStatus);
+  input.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" && !document.querySelector("#btn-start").disabled) {
+      document.querySelector("#btn-start").click();
     }
-    set_indicators(left,right);
+  });
+
+  document.querySelector("#btn-start").addEventListener("click", async () => {
+    const norm = normalizeRedirectUrl(input.value, { selfOrigin });
+    if (!norm.ok) {
+      renderStatus();
+      return;
+    }
+    const saved = await saveSettings({
+      redirectUrl: norm.error === "empty" ? "" : input.value.trim(),
+      welcome: { done: true },
+    });
+    await finishAndGo(saved);
+  });
+
+  document.querySelector("#btn-skip").addEventListener("click", async () => {
+    const saved = await saveSettings({ welcome: { done: true } });
+    await finishAndGo(saved);
+  });
 }
 
-function set_indicators(left, right){
-  if(index == 0) {
-      left.classList.add('ghost');
-  } else if(index == pages.length-1) {
-      right.classList.add('ghost');
-  }
-
-  // unselect current
-  var selected = document.getElementsByClassName('list-nav selected')[0];
-  selected.classList.remove('selected');
-
-  // add current index
-  selected = document.getElementsByClassName(pages[index].id)[0];
-  selected.classList.add('selected');
-}
-
-function init() {
-
-    document.addEventListener("click", function(e) {
-        if(e.target.classList.contains('next')) {
-            navigate(true);
-        }
-        else if (e.target.classList.contains('prev')) {
-            navigate(false);
-        }
-    }, true);
-    
-    var screenshots = document.getElementById("intro_screenshot");
-    slice.call(document.querySelectorAll('[data-role="screenshot"]'),0)
-        .forEach(function(el) {
-            var style = el.getAttribute("data-apply");
-            el.addEventListener("mouseover", function(e) {
-                screenshots.classList.add(style);
-                screenshots.classList.remove('default');
-            });
-            el.addEventListener("mouseout", function(e) {
-                screenshots.classList.add('default');
-                screenshots.classList.remove(style);
-            });
-        });
-
-    resize_elements(true);
-    
-    // preload images
-    preloadImages.forEach(function(pic) {
-        console.log("Preloading image: %s", pic);
-        var img = document.createElement("img");
-        img.src = "images/screenshots/" + pic;
-    });
-
-    forEach.call(document.querySelectorAll("[href='chrome://settings']"), function(elem) {
-        elem.addEventListener("click", function(e){
-            e.preventDefault();
-            chrome.tabs.create({url: "chrome://settings/extensions"});
-            return false;
-        }, false);
-    });
-
-    forEach.call(document.querySelectorAll("[href='chrome://settings/extensions']"), function(elem) {
-        elem.addEventListener("click", function(e){
-            e.preventDefault();
-            chrome.tabs.create({url: "chrome://settings/extensions"});
-            return false;
-        }, false);
-    });
-}
-
-window.addEventListener("DOMContentLoaded", init, true);
-window.addEventListener("resize", resize_elements, true);
-window.addEventListener("keyup", keyed_navigation, true);
+void main();

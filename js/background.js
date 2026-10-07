@@ -16,8 +16,7 @@ chrome.runtime.onInstalled.addListener(async (details) => {
     const settings = await migrateSettings();
     console.info(TAG, "onInstalled:", details.reason, settings);
     if (details.reason === "install" && !settings.welcome.done) {
-      // TODO(v4 UI): 切换到 pages/welcome.html
-      await chrome.tabs.create({ url: chrome.runtime.getURL("welcome.html") });
+      await chrome.tabs.create({ url: chrome.runtime.getURL("pages/welcome.html") });
     }
   } catch (e) {
     console.error(TAG, "onInstalled failed:", e);

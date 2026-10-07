@@ -1,69 +1,171 @@
-# NewTab Redirect!
+# New Tab Redirect（新标签页重定向）
 
-## Google Chrome Extension
-_disclaimer: Google and Google Chrome are trademarks of Google, Inc. [NewTab Redirect! is an extension for Google Chrome](https://chrome.google.com/webstore/detail/new-tab-redirect/icpgjfneehieebagbmdbhnlpiopdcmna?hl=en)_
+让 Chrome 的每个新标签页打开你指定的网址——或者一个轻量、优雅的默认仪表盘。
 
-Sets a custom URL to load in new tabs.  Choose from:
- *  Chrome's about pages
- *  NewTab
- *  Extensions
- *  Downloads
- *  History
- *  Popular URLs
- *  Your own URL
- 
-Your custom tab can also be a local file, allowing you to create your own new tab page. Saving blank text will cause your new tab to be about:blank.
+**v4.0.0** 是对 [jimschubert/NewTab-Redirect](https://github.com/jimschubert/NewTab-Redirect)（基线 v3.1.6，commit `422858b`）的一次完整现代化重构：移除 AngularJS / jQuery / Font Awesome，改为原生 HTML + CSS + ES Modules；全面重做设置页、新标签页与 Welcome；支持简体中文 / English 与浅色 / 深色 / 跟随系统主题；Manifest V3，最小权限。
 
-Files can begin with: `file:\\`, `file://`, and `file:///`
+- English version: see below / 英文说明见下文。
 
-**Important:** 
-This is not meant to replace your homepage, only new tabs.  If your browser is set to load the New Tab page as your homepage, there may be odd consequences.
+---
 
-## Missing Local Files?
+## 主要功能
 
-This is due to a change in Google Chrome, not a change to the extension.
+- **自定义新标签页**：打开任意 `https://` / `http://` / `file:///` / `chrome://` / `about:blank` 等地址。
+- **智能规范化**：输入 `example.com` 自动按 `https://example.com` 处理（不再默认补 `http://`）。
+- **两种跳转方式**：
+  - *直接导航*（默认）：原地替换新标签页，不新增历史记录；
+  - *标签页更新*：打开后光标停留在地址栏，方便直接输入搜索。
+- **默认仪表盘**（未设置网址时）：常用网站 Top Sites + 书签栏 + 设置入口，均为可选项。
+- **Chrome Sync**：可选，把扩展设置同步到你的 Google 账户。
+- **中英双语**：跟随浏览器语言（`_locales`，简体中文 / English）。
+- **深浅色主题**：跟随系统 / 浅色 / 深色。
+- **老配置自动迁移**：v3.x 的设置（`url`、`syncOptions`、`always-tab-update`、`ntr.*`）在升级后自动迁移，不丢配置。
 
-You'll now need to navigate to `chrome://extensions` and find the New Tab Redirect options. Click Details here, then scroll down and toggle on `Allow access to file URLs`.
+## 安装
 
-Chrome doesn't allow for an extension developer to warn/notify on changed behavior, and there's no logical place for me to embed browser tutorials into the extension. Whenever you see an extension update with changed permissions, you should always be reviewing the extension's settings and detais.
+### 从源码加载（开发者模式）
 
-## Omnibar support
+1. 下载本仓库（`git clone` 或下载 ZIP 解压）；
+2. 打开 `chrome://extensions`，右上角开启「开发者模式」；
+3. 点击「加载已解压的扩展程序」，选择本仓库目录（含 `manifest.json` 的目录）。
 
-If you use the built-in New Tab Redirect Apps page, you will be able to type directly into the omnibar. If you use a custom url, the architecture of the extension can not allow for focusing or clearing of the omnibar.
+### Chrome Web Store
 
-Google Chrome extensions do not currently have access to interact with the omnibar for highlighting after the new page is created.  There is an experimental API to retrieve values and detect user input in the omnibar, but it does not allow extensions to highlight the text.  I've tested version 1.0.1 of New Tab Redirect! across numerous developer builds, and the cursor only occasionally ends at the end of the omnibar.  However, this is handled by Chrome itself and can not be modified via the extension.  As soon as Chrome offers this functionality, I will implement it.  Until then, it is possible to use `CTRL+L` to quickly highlight the omnibar.
+本 fork 暂未上架。原版扩展（v3.x）仍可在
+[Chrome Web Store](https://chrome.google.com/webstore/detail/new-tab-redirect/icpgjfneehieebagbmdbhnlpiopdcmna)
+安装。
 
-## "Can I purchase your extension?"
+## 使用方式
 
-**Absolutely not.**
+1. 安装后 Welcome 页会引导你输入网址（也可跳过直接使用仪表盘）；
+2. 打开扩展设置（`chrome://extensions` → New Tab Redirect → 详细信息 → 扩展程序选项，或仪表盘右上角齿轮）：
+   - **新标签页打开**：输入网址并保存，或使用快速选择（空白页 / 下载 / 历史 / 扩展管理 / Chrome 设置 / 默认仪表盘）；
+   - **跳转方式**：选择直接导航或标签页更新；
+   - **外观**：跟随系统 / 浅色 / 深色；
+   - **默认仪表盘**：按需开启书签栏、常用网站并设置数量；
+   - **Chrome Sync**：开启后设置在设备间同步。
+3. 留空网址即恢复默认仪表盘。
 
-I get emails asking this question at least once a week. This extension is not now, nor will it ever be, for sale. I've turned down offers between $100 and $50,000: I'm obviously not kidding about this so please don't continuously pester me and waste my free time.
+## 本地文件 URL
 
-First of all, this extension is released under the MIT license. You are basically free to release this extension under a different name and of course provide attribution to me in some way. This extension will **always** be 100% free and open source in this way. You'll be starting your user base at 0, that's just how it works.
+要把新标签页指向本地 `file:///` 页面（例如自制起始页）：
 
-Secondly, the only reason people have asked to purchase this extension is because it has nearly a million regular users. Many developers are looking for some quick cash and attempt to purchase very popular extensions so they can secretly add anonymous data gathering, injected ads, or some other third-party code.  I don't like that crap in extensions I use, why would I want it in an extension I've created? I respect my users far too much to allow for this kind of shady business to happen to my extension. Again, I'm not joking. I've discovered an extension I loved silently sending every visited page to a third-part marketing firm. I immediately reported that extension to Google and it was removed from the web store *within two hours*. 
+1. 在设置里填入完整地址，如 `file:///C:/Users/you/start.html`（Windows）或 `file:///home/you/start.html`；
+2. 前往 `chrome://extensions` → New Tab Redirect → 详细信息 → 开启 **「允许访问文件网址」**。
 
-I don't need supplemental income, so don't ask to purchase the extension or try to get me to include your code with my code. If you want to contribute, that's fine, but I will *absolutely never* include code that sends or receives data anywhere other than syncing with the user's Google Account.
+这是 Chrome 的安全要求，扩展无法替你完成这一步。若跳转本地文件失败，通常是该开关未开启。
 
-Lastly, the only way to sell you my extension with all those coveted users would be to relinquish the rights to my Google Account (james.schubert@gmail.com). This account is about 90% of my online identity, so that will obviously never happen. I realize it's possible to jump through hoops with Google to transfer ownership, but that's not something I'm willing to do. Sorry, it's as simple as that. If I'm wrong and transferring ownership also transfers users, I frankly don't care.
+## 权限说明
 
-To summarize: **the extension is not for sale**
+本扩展遵循最小权限原则。
 
-## No affiliation with Google!
+| 权限 | 类型 | 用途 |
+| --- | --- | --- |
+| `storage` | 必需 | 保存你的设置（本地） |
+| `favicon` | 必需 | 在设置页与仪表盘显示网站图标 |
+| `file:///*` | 主机权限 | 允许新标签页跳转到 `file://` 地址（Chrome 118+ 的要求） |
+| `bookmarks` | 可选 | 仪表盘显示书签栏，开启该功能时才请求 |
+| `topSites` | 可选 | 仪表盘显示常用网站，开启该功能时才请求 |
 
-_I am not affiliated with Google or Google Chrome.  
-Google Chrome is a registered trademark of Google, Inc._
+v3.x 中的 `management`（旧 Apps 页）与 `tabs` 已在 v4 中移除。
 
-If I have some free time, I don't mind answering questions related to other issues you're having with Google Chrome (outside of the New Tab Redirect extension). I don't have a lot of free time, though.
+## Chrome Sync
 
-## Legal
+在设置中开启后，扩展设置会通过 Chrome 账户同步在设备间保持一致。**只同步扩展设置本身**，不同步你的浏览历史、书签或任何浏览数据。
 
-NewTab Redirect is released under the [MIT license](http://bit.ly/mit-license). NewTab Redirect was previously hosted on [Google Projects](http://code.google.com/p/newtabredirect/) under [GPLv3 license](http://www.gnu.org/licenses/gpl.html). You *may not* redistribute this software without proper attribution.
+## 隐私说明
 
-* AngularJS: Code is MIT Licensed. Details are available [here](https://github.com/angular/angular.js/blob/master/LICENSE)
+- 无遥测、无广告、无统计、无远程配置；
+- 不加载任何远程代码；
+- 不收集、不上传你的 URL、书签、常用网站或浏览记录；
+- 所有数据只保存在本地，或在你明确开启后经 Chrome Sync 同步到你的 Google 账户。
 
-* jQuery: Code is MIT Licensed. Details are available [here](https://github.com/jquery/jquery/blob/master/MIT-LICENSE.txt)
+## 开源许可与致谢
 
-* Font Awesome by Dave Gandy - http://fontawesome.io: Code is MIT licensed, Fonts are SIL OFL 1.1. Details are available [here](http://fontawesome.io/license/)
+本项目基于原项目 [New Tab Redirect!](https://github.com/jimschubert/NewTab-Redirect) by **James Schubert**，以 [MIT License](LICENSE) 发布并延续。
 
-* The new tab and document-new icons were released by <em>tango!</em> into the public domain.  Details are available [here](http://en.wikipedia.org/wiki/File:Tab-new.svg)
+- 原作者：James Schubert（james.schubert@gmail.com），2009–2023；
+- v3.1.6 基线：commit `422858b`（tag `upstream-3.1.6`）；
+- Google、Chrome 是 Google, Inc. 的商标，本项目与 Google 无关。
+
+历史变更见 [CHANGELOG.md](CHANGELOG.md)。
+
+## 开发说明
+
+无运行时依赖、无构建步骤，源码即产物。
+
+```text
+manifest.json          MV3 清单（v4.0.0）
+pages/                 newtab.html / options.html / welcome.html
+js/
+  background.js        module service worker（迁移 + Welcome + Sync 镜像）
+  lib/storage.js       设置存储层（v2 schema、旧配置迁移）
+  lib/redirect.js      URL 规范化与跳转执行
+  lib/i18n.js          data-i18n 声明式国际化
+  lib/theme.js         主题切换
+  newtab.js / options.js / welcome.js
+css/                   base.css（设计令牌与组件）+ 各页面样式
+_locales/              en / zh_CN 文案
+icons/                 扩展图标
+tests/                 Node 内置 test runner 单元测试
+scripts/check.mjs      静态检查（manifest / locales / 远程代码 / 引用完整性）
+```
+
+本地开发：
+
+```bash
+npm ci        # 安装开发工具链（仅 ESLint/Prettier，不进入运行时）
+npm test      # Node 单元测试（storage / redirect）
+npm run check # 静态检查
+npm run lint  # ESLint
+```
+
+在 Chrome 中验证：`chrome://extensions` → 开发者模式 → 加载已解压的扩展程序 → 选择仓库根目录。
+
+Node 仅作为开发工具链，扩展运行时不依赖 Node。
+
+---
+
+# English
+
+**New Tab Redirect** opens the URL of your choice — or a clean, lightweight dashboard — in every new Chrome tab.
+
+**v4.0.0** is a full modernization of [jimschubert/NewTab-Redirect](https://github.com/jimschubert/NewTab-Redirect) (baseline v3.1.6, commit `422858b`): AngularJS, jQuery and Font Awesome removed in favor of vanilla HTML + CSS + ES modules; Options, New Tab and Welcome pages redesigned; Simplified Chinese / English i18n; light / dark / system themes; Manifest V3 with minimal permissions.
+
+## Features
+
+- Set any `https://` / `http://` / `file:///` / `chrome://` / `about:blank` address as the new tab page.
+- Bare domains are normalized to `https://` (`example.com` → `https://example.com`).
+- Two navigation modes: *direct navigation* (replaces the tab, no extra history entry) or *tab update* (cursor stays in the address bar).
+- Default dashboard when no URL is set: top sites, bookmarks bar, settings entry — all optional.
+- Optional Chrome Sync for extension settings only.
+- English / Simplified Chinese, light / dark / system theme.
+- Automatic, idempotent migration of v3.x settings.
+
+## Install
+
+Load unpacked: `chrome://extensions` → Developer mode → **Load unpacked** → select this repository folder. This fork is not published to the Chrome Web Store; the original v3.x extension is available [there](https://chrome.google.com/webstore/detail/new-tab-redirect/icpgjfneehieebagbmdbhnlpiopdcmna).
+
+## Local files
+
+To redirect to a local `file:///` page, also enable **Allow access to file URLs** for this extension under `chrome://extensions` → Details. This is a Chrome security requirement.
+
+## Permissions
+
+| Permission | Kind | Purpose |
+| --- | --- | --- |
+| `storage` | required | Save settings locally |
+| `favicon` | required | Show site icons in UI |
+| `file:///*` | host | Allow new tab navigation to `file://` URLs (required by Chrome 118+) |
+| `bookmarks` | optional | Dashboard bookmarks bar, requested on enable |
+| `topSites` | optional | Dashboard top sites, requested on enable |
+
+`management` and `tabs` from v3.x have been removed.
+
+## Privacy
+
+No telemetry, no ads, no analytics, no remote code. Nothing about your browsing is collected or uploaded. Settings live locally, or in your Google account only if you enable Chrome Sync.
+
+## License & credits
+
+MIT License, inherited from the original **New Tab Redirect!** by **James Schubert** (2009–2023). See [LICENSE](LICENSE) and [CHANGELOG.md](CHANGELOG.md). Google and Chrome are trademarks of Google, Inc.
